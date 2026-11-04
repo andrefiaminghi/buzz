@@ -82,3 +82,16 @@ def test_write_output_md_splits_paragraphs_on_speaker_and_pause(tmp_path: pathli
         "**Speaker 2** [00:00:02]: Hi.\n\n"
         "**Speaker 2** [00:01:05]: Later.\n"
     )
+
+
+def test_write_output_md_collapses_line_breaks_inside_segment(tmp_path: pathlib.Path):
+    output_file_path = tmp_path / "whisper.md"
+    segments = [Segment(0, 1000, "first line\n\nsecond line\r\nthird")]
+
+    write_output(
+        path=str(output_file_path), segments=segments, output_format=OutputFormat.MD
+    )
+
+    assert output_file_path.read_text(encoding="utf-8") == (
+        "**[00:00:00]** first line second line third\n"
+    )
