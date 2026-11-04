@@ -353,7 +353,9 @@ def write_output(
             previous_speaker = None
 
             for segment in segments:
-                content = getattr(segment, segment_key).strip()
+                # Collapse line breaks inside a segment: a blank line would
+                # split the paragraph and break re-reading the file.
+                content = " ".join(getattr(segment, segment_key).split())
                 speaker = getattr(segment, "speaker", "").strip()
                 if (
                     not paragraphs
